@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+}
+
+.shapeContainer {
+  width: 20px;
+  height: 20px;
+}
