@@ -1,17 +1,22 @@
-import { useState } from 'react';
 import type { GameInfo } from '../../data/parser/parser';
 import { fetchGameInfo } from '../../data/provider/provider';
 import { useQuery } from '@tanstack/react-query';
 
 export const useGameInfo = (): GameInfo | null => {
-  const [gameInfo, setGameInfo] = useState<GameInfo | null>(null);
-  useQuery({
+  const { data } = useQuery({
     queryKey: ['getGameInfo'],
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    gcTime: Infinity,
+    staleTime: Infinity,
     queryFn: async () => {
       const parsedGameInfo = await fetchGameInfo();
-      setGameInfo(parsedGameInfo);
+
+      return parsedGameInfo;
     },
   });
 
-  return gameInfo;
+  if (!data) return null;
+
+  return data;
 };
