@@ -69,16 +69,12 @@ export const EffectsLayer = ({
   };
 
   useEffect(() => {
-    // no set state loop
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTiles();
   }, [coloredSources]);
 
   useEffect(() => {
     const closestTile = getClosestColor();
     if (!closestTile) return;
-    // no set state loop
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setClosestColor(closestTile);
     setClosestColorDifference(
       getDifferenceWithTargetColor(closestTile.color, gameInfo.target),
