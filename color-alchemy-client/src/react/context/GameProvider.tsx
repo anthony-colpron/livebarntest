@@ -25,7 +25,7 @@ export const GameProvider = ({ gameInfo, children }: Props) => {
 
   const [coloredBoardTiles, setColoredBoardTiles] = useState<ColoredTile[]>([]);
 
-  const setColoredSource = (sourceToSet: ColoredTile) => {
+  const setColoredSource = useCallback((sourceToSet: ColoredTile) => {
     setColoredSources((prevColoredSources) => {
       const filteredColoredSources = prevColoredSources.filter(
         ({ x, y }) => sourceToSet.x !== x || sourceToSet.y !== y,
@@ -33,7 +33,7 @@ export const GameProvider = ({ gameInfo, children }: Props) => {
 
       return [...filteredColoredSources, sourceToSet];
     });
-  };
+  }, []);
 
   const setInitialSourceColor = useCallback(
     (x: number, y: number) => {
@@ -57,6 +57,7 @@ export const GameProvider = ({ gameInfo, children }: Props) => {
       closestColor,
       closestColorDifference,
       gameInfo,
+      setColoredSource,
     }),
     [
       coloredSources,
@@ -68,6 +69,7 @@ export const GameProvider = ({ gameInfo, children }: Props) => {
       boardWidth,
       boardHeight,
       gameInfo,
+      setColoredSource,
     ],
   );
 

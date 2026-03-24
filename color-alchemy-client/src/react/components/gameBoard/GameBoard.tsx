@@ -3,9 +3,11 @@ import { SourceCircle } from './sourceCircle/SourceCircle';
 import { BoardTile } from './tile/BoardTile';
 import { isCorner, isSide } from './utils';
 import { useGameContext } from '../../context/gameContext';
+import { DragDropProvider } from '@dnd-kit/react';
 
 export const GameBoard = () => {
-  const { boardHeight, boardWidth, coloredSources } = useGameContext();
+  const { boardHeight, boardWidth, coloredSources, setColoredSource } =
+    useGameContext();
 
   const renderShape = (x: number, y: number) => {
     if (isCorner(x, y, boardWidth, boardHeight)) return null;
@@ -24,19 +26,29 @@ export const GameBoard = () => {
           x: {x} y: {y}, color: {color}
         </div>
       ))}
-      <div className={styles.container}>
-        {Array.from({ length: boardHeight }).map((_, y) => (
-          <div key={y} className={styles.row}>
-            {Array.from({ length: boardWidth }).map((__, x) => {
-              return (
-                <div key={`${x}${y}`} className={styles.shapeContainer}>
-                  {renderShape(x, y)}
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
+      <DragDropProvider
+        onDragEnd={(event) => {
+          setColoredSource({
+            x: event.operation.target?.data.x,
+            y: event.operation.target?.data.y,
+            color: event.operation.source?.data.color,
+          });
+        }}
+      >
+        <div className={styles.container}>
+          {Array.from({ length: boardHeight }).map((_, y) => (
+            <div key={y} className={styles.row}>
+              {Array.from({ length: boardWidth }).map((__, x) => {
+                return (
+                  <div key={`${x}${y}`} className={styles.shapeContainer}>
+                    {renderShape(x, y)}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      </DragDropProvider>
     </>
   );
 };

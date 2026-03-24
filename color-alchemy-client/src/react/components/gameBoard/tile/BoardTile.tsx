@@ -1,3 +1,4 @@
+import { useDraggable } from '@dnd-kit/react';
 import { useBoardTileColor } from '../../../hooks/gameHooks';
 import { Tile } from '../../tile/Tile';
 
@@ -8,5 +9,12 @@ type Props = {
 
 export const BoardTile = ({ x, y }: Props) => {
   const color = useBoardTileColor(x, y);
-  return <Tile color={color} />;
+
+  const { ref } = useDraggable({
+    id: `${x},${y}`,
+    feedback: 'clone',
+    data: { color },
+  });
+
+  return <Tile ref={ref} color={color} />;
 };

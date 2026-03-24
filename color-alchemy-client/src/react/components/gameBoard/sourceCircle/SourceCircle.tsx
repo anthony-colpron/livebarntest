@@ -1,6 +1,7 @@
 import styles from './SourceCircle.module.css';
 import { useSourceColor } from '../../../hooks/gameHooks';
 import { useGameContext } from '../../../context/gameContext';
+import { useDroppable } from '@dnd-kit/react';
 
 type Props = {
   x: number;
@@ -14,8 +15,10 @@ export const SourceCircle = ({ x, y }: Props) => {
     backgroundColor: `rgb(${r}, ${g}, ${b})`,
   };
 
+  const { ref } = useDroppable({ id: `${x},${y}`, data: { x, y } });
   return (
     <div
+      ref={ref}
       className={styles.container}
       style={colorStyle}
       onClick={initialMoves ? () => setInitialSourceColor(x, y) : undefined}
