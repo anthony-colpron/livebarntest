@@ -9,11 +9,12 @@ type Props = {
 };
 
 export const SourceCircle = ({ x, y }: Props) => {
-  const { setInitialSourceColor, initialMoves } = useGameContext();
+  const { setInitialSourceColor, initialMoves, totalMovesLeft } =
+    useGameContext();
   const [r, g, b] = useSourceColor(x, y);
-  const colorStyle = {
-    backgroundColor: `rgb(${r}, ${g}, ${b})`,
-  };
+
+  const hasInitialMoves = initialMoves > 0;
+  const hasMovesLeft = totalMovesLeft > 0;
 
   const { ref: droppableRef, isDropTarget } = useDroppable({
     id: `${x},${y}`,
@@ -23,7 +24,20 @@ export const SourceCircle = ({ x, y }: Props) => {
     id: `${x},${y}`,
     data: { x, y, color: [r, g, b] },
     feedback: 'clone',
+    disabled: !hasMovesLeft || hasInitialMoves,
   });
+
+  const getCursorStyle = () => {
+    if (hasInitialMoves) return 'pointer';
+    if (hasMovesLeft) return 'grab';
+
+    return 'default';
+  };
+
+  const style = {
+    backgroundColor: `rgb(${r}, ${g}, ${b})`,
+    cursor: getCursorStyle(),
+  };
 
   return (
     <div ref={droppableRef}>
@@ -33,8 +47,10 @@ export const SourceCircle = ({ x, y }: Props) => {
       <div
         ref={draggableRef}
         className={styles.container}
-        style={colorStyle}
-        onClick={initialMoves ? () => setInitialSourceColor(x, y) : undefined}
+        style={style}
+        onClick={
+          hasInitialMoves ? () => setInitialSourceColor(x, y) : undefined
+        }
       />
     </div>
   );

@@ -22,6 +22,7 @@ type ContextType = {
   gameInfo: GameInfo;
   setInitialSourceColor: (x: number, y: number) => void;
   initialMoves: number;
+  totalMovesLeft: number;
   boardHeight: number;
   boardWidth: number;
   closestColor?: ColoredTile;
@@ -35,6 +36,7 @@ export const GameContext = createContext<ContextType>({
   gameInfo: stubGameInfo,
   setInitialSourceColor: () => {},
   initialMoves: 3,
+  totalMovesLeft: 0,
   boardHeight: 0,
   boardWidth: 0,
   setColoredSource: () => {},

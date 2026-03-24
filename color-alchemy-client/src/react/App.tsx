@@ -13,7 +13,7 @@ export const App = () => {
         {Object.entries(gameInfo).map(([key, value]) => {
           return <div key={key}>{`${key}: ${value}`}</div>;
         })}
-        <GameStatePanel gameInfo={gameInfo} />
+        <GameStatePanel />
         <GameBoard />
       </div>
     </GameProvider>

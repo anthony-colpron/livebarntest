@@ -16,6 +16,7 @@ const getColorForInitialMove = (initialMoves: number): ShapeColor => {
 export const GameProvider = ({ gameInfo, children }: Props) => {
   const [coloredSources, setColoredSources] = useState<ColoredTile[]>([]);
   const [initialMoves, setInitialMoves] = useState(3);
+  const [totalMovesLeft, setTotalMovesLeft] = useState(gameInfo.maxMoves);
   const [closestColor, setClosestColor] = useState<ColoredTile>();
   const [closestColorDifference, setClosestColorDifference] =
     useState<number>();
@@ -26,13 +27,20 @@ export const GameProvider = ({ gameInfo, children }: Props) => {
   const [coloredBoardTiles, setColoredBoardTiles] = useState<ColoredTile[]>([]);
 
   const setColoredSource = useCallback((sourceToSet: ColoredTile) => {
+    const { color: colorToSet } = sourceToSet;
+    const colorToSetIsBlack =
+      colorToSet[0] === 0 && colorToSet[1] === 0 && colorToSet[2] === 0;
     setColoredSources((prevColoredSources) => {
       const filteredColoredSources = prevColoredSources.filter(
         ({ x, y }) => sourceToSet.x !== x || sourceToSet.y !== y,
       );
 
+      if (colorToSetIsBlack) return filteredColoredSources;
+
       return [...filteredColoredSources, sourceToSet];
     });
+
+    setTotalMovesLeft((prevDragMoves) => prevDragMoves - 1);
   }, []);
 
   const setInitialSourceColor = useCallback(
@@ -58,6 +66,7 @@ export const GameProvider = ({ gameInfo, children }: Props) => {
       closestColorDifference,
       gameInfo,
       setColoredSource,
+      totalMovesLeft,
     }),
     [
       coloredSources,
@@ -70,6 +79,7 @@ export const GameProvider = ({ gameInfo, children }: Props) => {
       boardHeight,
       gameInfo,
       setColoredSource,
+      totalMovesLeft,
     ],
   );
 
