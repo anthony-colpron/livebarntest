@@ -1,3 +1,4 @@
+import { Tooltip } from 'react-tooltip';
 import { GameBoard } from './components/gameBoard/GameBoard';
 import { GameStatePanel } from './components/gameStatePanel/GameStatePanel';
 import { GameProvider } from './context/GameProvider';
@@ -16,6 +17,7 @@ export const App = () => {
         <GameStatePanel />
         <GameBoard />
       </div>
+      <Tooltip id="color-tooltip" />
     </GameProvider>
   );
 };

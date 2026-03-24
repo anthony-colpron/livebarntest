@@ -51,6 +51,10 @@ export const SourceCircle = ({ x, y }: Props) => {
         onClick={
           hasInitialMoves ? () => setInitialSourceColor(x, y) : undefined
         }
+        data-tooltip-id="color-tooltip"
+        data-tooltip-content={`${r}, ${g}, ${b}`}
+        data-tooltip-variant="info"
+        data-tooltip-offset={5}
       />
     </div>
   );

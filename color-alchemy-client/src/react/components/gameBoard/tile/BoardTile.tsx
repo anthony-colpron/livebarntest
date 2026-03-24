@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const BoardTile = ({ x, y }: Props) => {
-  const { totalMovesLeft, initialMoves } = useGameContext();
+  const { totalMovesLeft, initialMoves, closestColor } = useGameContext();
   const color = useBoardTileColor(x, y);
 
   const { ref } = useDraggable({
@@ -20,6 +20,10 @@ export const BoardTile = ({ x, y }: Props) => {
   });
 
   const cursor = totalMovesLeft > 1 && initialMoves < 1 ? 'grab' : 'default';
+  const isSelected =
+    closestColor && x === closestColor.x && y === closestColor.y;
 
-  return <Tile ref={ref} color={color} cursor={cursor} />;
+  return (
+    <Tile ref={ref} color={color} cursor={cursor} isSelected={isSelected} />
+  );
 };
