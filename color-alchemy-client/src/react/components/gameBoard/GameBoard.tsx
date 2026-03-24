@@ -3,12 +3,10 @@ import { SourceCircle } from './sourceCircle/SourceCircle';
 import { BoardTile } from './tile/BoardTile';
 import { isCorner, isSide } from './utils';
 import { useGameContext } from '../../context/gameContext';
-import { DragDropProvider } from '@dnd-kit/react';
+import { DragDropProvider } from '../../context/dragDropProvider/DragDropProvider';
 
 export const GameBoard = () => {
-  const { boardHeight, boardWidth, coloredSources, setColoredSource } =
-    useGameContext();
-
+  const { boardHeight, boardWidth, coloredSources } = useGameContext();
   const renderShape = (x: number, y: number) => {
     if (isCorner(x, y, boardWidth, boardHeight)) return null;
 
@@ -26,15 +24,7 @@ export const GameBoard = () => {
           x: {x} y: {y}, color: {color}
         </div>
       ))}
-      <DragDropProvider
-        onDragEnd={(event) => {
-          setColoredSource({
-            x: event.operation.target?.data.x,
-            y: event.operation.target?.data.y,
-            color: event.operation.source?.data.color,
-          });
-        }}
-      >
+      <DragDropProvider>
         <div className={styles.container}>
           {Array.from({ length: boardHeight }).map((_, y) => (
             <div key={y} className={styles.row}>
