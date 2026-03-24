@@ -1,13 +1,12 @@
-import { useTileColor } from '../../../hooks/gameHooks';
+import type { ShapeColor } from '../../../data/types';
 import styles from './Tile.module.css';
 
 type Props = {
-  x: number;
-  y: number;
+  color: ShapeColor;
 };
 
-export const Tile = ({ x, y }: Props) => {
-  const [r, g, b] = useTileColor(x, y);
+export const Tile = ({ color }: Props) => {
+  const [r, g, b] = color;
 
   const colorStyle = {
     backgroundColor: `rgb(${r}, ${g}, ${b})`,

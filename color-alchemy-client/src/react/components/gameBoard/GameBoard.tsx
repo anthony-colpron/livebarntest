@@ -1,6 +1,6 @@
 import styles from './GameBoard.module.css';
 import { SourceCircle } from './sourceCircle/SourceCircle';
-import { Tile } from './tile/Tile';
+import { BoardTile } from './tile/BoardTile';
 import { isCorner, isSide } from './utils';
 import { useGameContext } from '../../context/gameContext';
 
@@ -14,7 +14,7 @@ export const GameBoard = () => {
       return <SourceCircle x={x} y={y} />;
     }
 
-    return <Tile x={x} y={y} />;
+    return <BoardTile x={x} y={y} />;
   };
 
   return (

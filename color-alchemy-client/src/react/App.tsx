@@ -1,4 +1,5 @@
 import { GameBoard } from './components/gameBoard/GameBoard';
+import { GameStatePanel } from './components/gameStatePanel/GameStatePanel';
 import { GameProvider } from './context/GameProvider';
 import { useGameInfo } from './hooks/dataHooks';
 
@@ -12,6 +13,7 @@ export const App = () => {
         {Object.entries(gameInfo).map(([key, value]) => {
           return <div key={key}>{`${key}: ${value}`}</div>;
         })}
+        <GameStatePanel gameInfo={gameInfo} />
         <GameBoard />
       </div>
     </GameProvider>

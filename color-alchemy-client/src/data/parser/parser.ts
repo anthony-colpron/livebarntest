@@ -7,7 +7,11 @@ const gameInfoSchema = z.strictObject({
   width: z.number(),
   height: z.number(),
   maxMoves: z.number(),
-  target: z.array(z.number().min(0).max(255)).length(3),
+  target: z.tuple([
+    z.number().min(0).max(255),
+    z.number().min(0).max(255),
+    z.number().min(0).max(255),
+  ]),
 });
 
 export const parseGameInfo = (data: unknown): GameInfo | null => {

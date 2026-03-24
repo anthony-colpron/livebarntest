@@ -1,8 +1,7 @@
 import type { ShapeColor } from '../../data/types';
-import { useGameContext } from '../context/gameContext';
-import { useGameInfo } from './dataHooks';
+import { useGameContext, type ColoredTile } from '../context/gameContext';
 
-const BLACK: ShapeColor = [0, 0, 0];
+export const BLACK: ShapeColor = [0, 0, 0];
 
 export const useSourceColor = (x: number, y: number): ShapeColor => {
   const { coloredSources } = useGameContext();
@@ -16,11 +15,13 @@ export const useSourceColor = (x: number, y: number): ShapeColor => {
   return BLACK;
 };
 
-export const useTileColor = (x: number, y: number): ShapeColor => {
-  const { coloredSources, boardWidth, boardHeight } = useGameContext();
-  const gameInfo = useGameInfo();
-  if (!gameInfo) return BLACK;
-
+export const getTileColor = (
+  x: number,
+  y: number,
+  boardWidth: number,
+  boardHeight: number,
+  coloredSources: ColoredTile[],
+): ShapeColor => {
   const validSources = coloredSources.filter(
     ({ x: sourceX, y: sourceY }) => sourceX === x || sourceY === y,
   );
