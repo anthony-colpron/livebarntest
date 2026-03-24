@@ -1,16 +1,11 @@
-import type { GameInfo } from '../../../data/parser/parser';
 import styles from './GameBoard.module.css';
 import { SourceCircle } from './sourceCircle/SourceCircle';
 import { Tile } from './tile/Tile';
 import { isCorner, isSide } from './utils';
+import { useGameContext } from '../../context/gameContext';
 
-type Props = {
-  gameInfo: GameInfo;
-};
-
-export const GameBoard = ({ gameInfo }: Props) => {
-  const boardHeight = gameInfo.height + 2;
-  const boardWidth = gameInfo.width + 2;
+export const GameBoard = () => {
+  const { boardHeight, boardWidth, coloredSources } = useGameContext();
 
   const renderShape = (x: number, y: number) => {
     if (isCorner(x, y, boardWidth, boardHeight)) return null;
@@ -23,16 +18,25 @@ export const GameBoard = ({ gameInfo }: Props) => {
   };
 
   return (
-    <div className={styles.container}>
-      {Array.from({ length: boardHeight }).map((_, y) => (
-        <div className={styles.row}>
-          {Array.from({ length: boardWidth }).map((__, x) => {
-            return (
-              <div className={styles.shapeContainer}>{renderShape(x, y)}</div>
-            );
-          })}
+    <>
+      {coloredSources.map(({ x, y, color }) => (
+        <div key={`${x}${y}`}>
+          x: {x} y: {y}, color: {color}
         </div>
       ))}
-    </div>
+      <div className={styles.container}>
+        {Array.from({ length: boardHeight }).map((_, y) => (
+          <div key={y} className={styles.row}>
+            {Array.from({ length: boardWidth }).map((__, x) => {
+              return (
+                <div key={`${x}${y}`} className={styles.shapeContainer}>
+                  {renderShape(x, y)}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </>
   );
 };

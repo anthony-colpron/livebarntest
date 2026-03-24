@@ -1,14 +1,11 @@
-import { useContext } from 'react';
-import { GameContext } from '../context/gameContext';
+import type { ShapeColor } from '../../data/types';
+import { useGameContext } from '../context/gameContext';
 import { useGameInfo } from './dataHooks';
 
-const BLACK: [number, number, number] = [0, 0, 0];
+const BLACK: ShapeColor = [0, 0, 0];
 
-export const useSourceColor = (
-  x: number,
-  y: number,
-): [number, number, number] => {
-  const { coloredSources } = useContext(GameContext);
+export const useSourceColor = (x: number, y: number): ShapeColor => {
+  const { coloredSources } = useGameContext();
 
   const foundSource = coloredSources.find(
     ({ x: sourceX, y: sourceY }) => x === sourceX && y === sourceY,
@@ -19,46 +16,56 @@ export const useSourceColor = (
   return BLACK;
 };
 
-export const useTileColor = (
-  x: number,
-  y: number,
-): [number, number, number] => {
-  const { coloredSources } = useContext(GameContext);
+export const useTileColor = (x: number, y: number): ShapeColor => {
+  const { coloredSources, boardWidth, boardHeight } = useGameContext();
   const gameInfo = useGameInfo();
   if (!gameInfo) return BLACK;
-  if (!coloredSources[0]) return BLACK;
-  if (coloredSources[0].x !== x && coloredSources[0].y !== y) return BLACK;
 
-  const isXSource =
-    coloredSources[0].x === 0 || coloredSources[0].x === gameInfo.width - 1;
-
-  const distanceToSource = Math.abs(
-    isXSource ? x - coloredSources[0].x : y - coloredSources[0].y,
+  const validSources = coloredSources.filter(
+    ({ x: sourceX, y: sourceY }) => sourceX === x || sourceY === y,
   );
 
-  const { width, height } = gameInfo;
+  if (validSources.length === 0) return BLACK;
 
-  if (isXSource) {
-    return [
-      ((width + 1 - distanceToSource) / (width + 1)) *
-        coloredSources[0].color[0],
-      ((width + 1 - distanceToSource) / (width + 1)) *
-        coloredSources[0].color[1],
-      ((width + 1 - distanceToSource) / (width + 1)) *
-        coloredSources[0].color[2],
-    ];
-  }
+  const colorsSum = validSources.reduce((acc, validSource): ShapeColor => {
+    if (validSource.x !== x && validSource.y !== y) return BLACK;
 
-  return [
-    ((height + 1 - distanceToSource) / (height + 1)) *
-      coloredSources[0].color[0],
-    ((height + 1 - distanceToSource) / (height + 1)) *
-      coloredSources[0].color[1],
-    ((height + 1 - distanceToSource) / (height + 1)) *
-      coloredSources[0].color[2],
-  ];
+    const isXSource = validSource.x === 0 || validSource.x === boardWidth - 1;
 
-  // const affectingSources = coloredSources.filter(
-  //   ({ x: sourceX, y: sourceY }) => sourceX === x || sourceY === y,
-  // );
+    const distanceToSource = Math.abs(
+      isXSource ? x - validSource.x : y - validSource.y,
+    );
+
+    let currentSourceColorInfluence: ShapeColor;
+
+    if (isXSource) {
+      currentSourceColorInfluence = [
+        ((boardWidth + 1 - distanceToSource) / (boardWidth + 1)) *
+          validSource.color[0],
+        ((boardWidth + 1 - distanceToSource) / (boardWidth + 1)) *
+          validSource.color[1],
+        ((boardWidth + 1 - distanceToSource) / (boardWidth + 1)) *
+          validSource.color[2],
+      ];
+    } else {
+      currentSourceColorInfluence = [
+        ((boardHeight + 1 - distanceToSource) / (boardHeight + 1)) *
+          validSource.color[0],
+        ((boardHeight + 1 - distanceToSource) / (boardHeight + 1)) *
+          validSource.color[1],
+        ((boardHeight + 1 - distanceToSource) / (boardHeight + 1)) *
+          validSource.color[2],
+      ];
+    }
+
+    return acc.map(
+      (accValue, index) => accValue + currentSourceColorInfluence[index],
+    ) as ShapeColor;
+  }, BLACK);
+
+  const [r, g, b] = colorsSum;
+
+  const normalizationFactor = 255 / Math.max(r, g, b, 255);
+
+  return colorsSum.map((value) => value * normalizationFactor) as ShapeColor;
 };
