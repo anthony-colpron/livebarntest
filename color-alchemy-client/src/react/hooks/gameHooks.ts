@@ -1,5 +1,5 @@
 import type { ShapeColor } from '../../data/types';
-import { useGameContext, type ColoredTile } from '../context/gameContext';
+import { useGameContext } from '../context/gameContext';
 
 export const BLACK: ShapeColor = [0, 0, 0];
 
@@ -15,58 +15,11 @@ export const useSourceColor = (x: number, y: number): ShapeColor => {
   return BLACK;
 };
 
-export const getTileColor = (
-  x: number,
-  y: number,
-  boardWidth: number,
-  boardHeight: number,
-  coloredSources: ColoredTile[],
-): ShapeColor => {
-  const validSources = coloredSources.filter(
-    ({ x: sourceX, y: sourceY }) => sourceX === x || sourceY === y,
+export const useBoardTileColor = (x: number, y: number): ShapeColor => {
+  const { coloredBoardTiles } = useGameContext();
+  const coloredTile = coloredBoardTiles.find(
+    ({ x: tileX, y: tileY }) => x === tileX && y === tileY,
   );
 
-  if (validSources.length === 0) return BLACK;
-
-  const colorsSum = validSources.reduce((acc, validSource): ShapeColor => {
-    if (validSource.x !== x && validSource.y !== y) return BLACK;
-
-    const isXSource = validSource.x === 0 || validSource.x === boardWidth - 1;
-
-    const distanceToSource = Math.abs(
-      isXSource ? x - validSource.x : y - validSource.y,
-    );
-
-    let currentSourceColorInfluence: ShapeColor;
-
-    if (isXSource) {
-      currentSourceColorInfluence = [
-        ((boardWidth + 1 - distanceToSource) / (boardWidth + 1)) *
-          validSource.color[0],
-        ((boardWidth + 1 - distanceToSource) / (boardWidth + 1)) *
-          validSource.color[1],
-        ((boardWidth + 1 - distanceToSource) / (boardWidth + 1)) *
-          validSource.color[2],
-      ];
-    } else {
-      currentSourceColorInfluence = [
-        ((boardHeight + 1 - distanceToSource) / (boardHeight + 1)) *
-          validSource.color[0],
-        ((boardHeight + 1 - distanceToSource) / (boardHeight + 1)) *
-          validSource.color[1],
-        ((boardHeight + 1 - distanceToSource) / (boardHeight + 1)) *
-          validSource.color[2],
-      ];
-    }
-
-    return acc.map(
-      (accValue, index) => accValue + currentSourceColorInfluence[index],
-    ) as ShapeColor;
-  }, BLACK);
-
-  const [r, g, b] = colorsSum;
-
-  const normalizationFactor = 255 / Math.max(r, g, b, 255);
-
-  return colorsSum.map((value) => value * normalizationFactor) as ShapeColor;
+  return coloredTile?.color ?? BLACK;
 };

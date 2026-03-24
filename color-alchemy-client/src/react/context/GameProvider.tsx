@@ -1,14 +1,8 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type PropsWithChildren,
-} from 'react';
+import { useCallback, useMemo, useState, type PropsWithChildren } from 'react';
 import { type ColoredTile, GameContext } from './gameContext';
 import type { ShapeColor } from '../../data/types';
-import { getTileColor } from '../hooks/gameHooks';
 import type { GameInfo } from '../../data/parser/parser';
+import { EffectsLayer } from './EffectsLayer';
 
 type Props = { gameInfo: GameInfo } & PropsWithChildren;
 
@@ -17,20 +11,6 @@ const getColorForInitialMove = (initialMoves: number): ShapeColor => {
   if (initialMoves === 2) return [0, 255, 0];
 
   return [0, 0, 255];
-};
-
-const getDifferenceWithTargetColor = (
-  tileColor: ShapeColor,
-  targetColor: ShapeColor,
-): number => {
-  return (
-    (((1 / 255) * 1) / Math.sqrt(3)) *
-    Math.sqrt(
-      Math.pow(targetColor[0] - tileColor[0], 2) +
-        Math.pow(targetColor[1] - tileColor[1], 2) +
-        Math.pow(targetColor[2] - tileColor[2], 2),
-    )
-  );
 };
 
 export const GameProvider = ({ gameInfo, children }: Props) => {
@@ -44,70 +24,6 @@ export const GameProvider = ({ gameInfo, children }: Props) => {
   const boardHeight = gameInfo.height + 2;
 
   const [coloredBoardTiles, setColoredBoardTiles] = useState<ColoredTile[]>([]);
-
-  const setTiles = () => {
-    const tilesToColor: { x: number; y: number }[] = [];
-
-    coloredSources.forEach((source) => {
-      const { x, y } = source;
-      if (x === 0 || x === boardWidth - 1) {
-        Array.from({ length: boardWidth }).forEach((_, index) => {
-          if (index > 0 && index < boardWidth - 1) {
-            tilesToColor.push({ x: index, y });
-          }
-        });
-      } else {
-        Array.from({ length: boardHeight }).forEach((_, index) => {
-          if (index > 0 && index < boardHeight - 1) {
-            tilesToColor.push({ x, y: index });
-          }
-        });
-      }
-    });
-
-    const coloredTiles = tilesToColor.map<ColoredTile>(({ x, y }) => ({
-      x,
-      y,
-      color: getTileColor(x, y, boardWidth, boardHeight, coloredSources),
-    }));
-
-    setColoredBoardTiles(coloredTiles);
-  };
-
-  const getClosestColor = (): ColoredTile | null => {
-    return coloredBoardTiles.reduce<ColoredTile | null>(
-      (acc, boardTile): ColoredTile | null => {
-        if (!acc) return boardTile;
-
-        if (
-          getDifferenceWithTargetColor(boardTile.color, gameInfo.target) <
-          getDifferenceWithTargetColor(acc.color, gameInfo.target)
-        ) {
-          return boardTile;
-        }
-
-        return acc;
-      },
-      null,
-    );
-  };
-
-  useEffect(() => {
-    // no set state loop
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTiles();
-  }, [coloredSources]);
-
-  useEffect(() => {
-    const closestTile = getClosestColor();
-    if (!closestTile) return;
-    // no set state loop
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setClosestColor(closestTile);
-    setClosestColorDifference(
-      getDifferenceWithTargetColor(closestTile.color, gameInfo.target),
-    );
-  }, [coloredBoardTiles]);
 
   const setColoredSource = (sourceToSet: ColoredTile) => {
     setColoredSources((prevColoredSources) => {
@@ -155,5 +71,15 @@ export const GameProvider = ({ gameInfo, children }: Props) => {
     ],
   );
 
-  return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
+  return (
+    <GameContext.Provider value={value}>
+      <EffectsLayer
+        setClosestColor={setClosestColor}
+        setClosestColorDifference={setClosestColorDifference}
+        setColoredBoardTiles={setColoredBoardTiles}
+      >
+        {children}
+      </EffectsLayer>
+    </GameContext.Provider>
+  );
 };

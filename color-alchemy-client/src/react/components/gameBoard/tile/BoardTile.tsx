@@ -1,5 +1,4 @@
-import { useGameContext } from '../../../context/gameContext';
-import { BLACK } from '../../../hooks/gameHooks';
+import { useBoardTileColor } from '../../../hooks/gameHooks';
 import { Tile } from '../../tile/Tile';
 
 type Props = {
@@ -8,10 +7,6 @@ type Props = {
 };
 
 export const BoardTile = ({ x, y }: Props) => {
-  const { coloredBoardTiles } = useGameContext();
-  const coloredTile = coloredBoardTiles.find(
-    ({ x: tileX, y: tileY }) => x === tileX && y === tileY,
-  );
-
-  return <Tile color={coloredTile?.color ?? BLACK} />;
+  const color = useBoardTileColor(x, y);
+  return <Tile color={color} />;
 };
