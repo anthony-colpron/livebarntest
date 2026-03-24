@@ -6,11 +6,11 @@ import {
   type PropsWithChildren,
 } from 'react';
 import { type ColoredTile, GameContext } from './gameContext';
-import { useGameInfo } from '../hooks/dataHooks';
 import type { ShapeColor } from '../../data/types';
 import { getTileColor } from '../hooks/gameHooks';
+import type { GameInfo } from '../../data/parser/parser';
 
-type Props = PropsWithChildren;
+type Props = { gameInfo: GameInfo } & PropsWithChildren;
 
 const getColorForInitialMove = (initialMoves: number): ShapeColor => {
   if (initialMoves === 3) return [255, 0, 0];
@@ -33,17 +33,15 @@ const getDifferenceWithTargetColor = (
   );
 };
 
-export const GameProvider = ({ children }: Props) => {
+export const GameProvider = ({ gameInfo, children }: Props) => {
   const [coloredSources, setColoredSources] = useState<ColoredTile[]>([]);
   const [initialMoves, setInitialMoves] = useState(3);
   const [closestColor, setClosestColor] = useState<ColoredTile>();
   const [closestColorDifference, setClosestColorDifference] =
     useState<number>();
 
-  const gameInfo = useGameInfo();
-
-  const boardWidth = gameInfo ? gameInfo.width + 2 : 0;
-  const boardHeight = gameInfo ? gameInfo.height + 2 : 0;
+  const boardWidth = gameInfo.width + 2;
+  const boardHeight = gameInfo.height + 2;
 
   const [coloredBoardTiles, setColoredBoardTiles] = useState<ColoredTile[]>([]);
 
@@ -82,11 +80,8 @@ export const GameProvider = ({ children }: Props) => {
         if (!acc) return boardTile;
 
         if (
-          getDifferenceWithTargetColor(
-            boardTile.color,
-            gameInfo?.target || [0, 0, 0],
-          ) <
-          getDifferenceWithTargetColor(acc.color, gameInfo?.target || [0, 0, 0])
+          getDifferenceWithTargetColor(boardTile.color, gameInfo.target) <
+          getDifferenceWithTargetColor(acc.color, gameInfo.target)
         ) {
           return boardTile;
         }
@@ -110,10 +105,7 @@ export const GameProvider = ({ children }: Props) => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setClosestColor(closestTile);
     setClosestColorDifference(
-      getDifferenceWithTargetColor(
-        closestTile.color,
-        gameInfo?.target || [0, 0, 0],
-      ),
+      getDifferenceWithTargetColor(closestTile.color, gameInfo.target),
     );
   }, [coloredBoardTiles]);
 
@@ -148,6 +140,7 @@ export const GameProvider = ({ children }: Props) => {
       boardHeight,
       closestColor,
       closestColorDifference,
+      gameInfo,
     }),
     [
       coloredSources,
@@ -158,6 +151,7 @@ export const GameProvider = ({ children }: Props) => {
       closestColorDifference,
       boardWidth,
       boardHeight,
+      gameInfo,
     ],
   );
 

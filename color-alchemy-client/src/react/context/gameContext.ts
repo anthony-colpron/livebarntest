@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 import type { ShapeColor } from '../../data/types';
+import type { GameInfo } from '../../data/parser/parser';
 
 export type ColoredTile = {
   x: number;
@@ -7,9 +8,18 @@ export type ColoredTile = {
   color: ShapeColor;
 };
 
+const stubGameInfo: GameInfo = {
+  userId: '',
+  height: 0,
+  width: 0,
+  maxMoves: 0,
+  target: [0, 0, 0],
+};
+
 type ContextType = {
   coloredSources: ColoredTile[];
   coloredBoardTiles: ColoredTile[];
+  gameInfo: GameInfo;
   setInitialSourceColor: (x: number, y: number) => void;
   initialMoves: number;
   boardHeight: number;
@@ -21,6 +31,7 @@ type ContextType = {
 export const GameContext = createContext<ContextType>({
   coloredSources: [],
   coloredBoardTiles: [],
+  gameInfo: stubGameInfo,
   setInitialSourceColor: () => {},
   initialMoves: 3,
   boardHeight: 0,

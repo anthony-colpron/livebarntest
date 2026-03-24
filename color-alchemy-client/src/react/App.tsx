@@ -8,7 +8,7 @@ export const App = () => {
   if (!gameInfo) return null;
 
   return (
-    <GameProvider>
+    <GameProvider gameInfo={gameInfo}>
       <div>
         {Object.entries(gameInfo).map(([key, value]) => {
           return <div key={key}>{`${key}: ${value}`}</div>;
