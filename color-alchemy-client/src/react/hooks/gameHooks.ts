@@ -1,14 +1,15 @@
 import { useEffect, useState, type SetStateAction } from 'react';
-import { BLACK } from '../../constants';
 import type { ColoredTile, ShapeColor } from '../../data/types';
 import { useGameContext } from '../context/gameContext';
 import {
   getColorForInitialMove,
   getDifferenceWithTargetColor,
   getTileColor,
+  isBlack,
   makeMapKey,
 } from '../context/utils';
 import type { GameInfo } from '../../data/parser/parser';
+import { BLACK } from '../../constants';
 
 type UseColoringMovesReturnType = {
   coloredSources: ColoredTile[];
@@ -175,11 +176,13 @@ export const useClosestColor = (
 };
 
 export const useGameEnd = (restartGame: (userId: string) => void) => {
-  const { gameInfo, closestColorDifference, totalMovesLeft } = useGameContext();
+  const { gameInfo, closestColorDifference, totalMovesLeft, closestColor } =
+    useGameContext();
 
   useEffect(() => {
     const hasLost = totalMovesLeft < 1;
-    const hasWon = closestColorDifference <= 0.1;
+    const hasWon =
+      closestColorDifference <= 0.1 && !isBlack(closestColor.color);
     if (hasWon || hasLost) {
       const message = `${hasWon ? 'Success' : 'Failure'}! Closest match is ${(closestColorDifference * 100).toFixed(2)}%! Do you want to play again?`;
       if (window.confirm(message)) {

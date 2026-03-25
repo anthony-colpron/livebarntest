@@ -3,6 +3,9 @@ import type { ColoredTile, ShapeColor } from '../../data/types';
 
 export const makeMapKey = (x: number, y: number) => `${x},${y}`;
 
+export const isBlack = (color: ShapeColor) =>
+  color[0] === BLACK[0] && color[1] === BLACK[1] && color[2] === BLACK[2];
+
 export const getColorForInitialMove = (initialMoves: number): ShapeColor => {
   if (initialMoves === 3) return [255, 0, 0];
   if (initialMoves === 2) return [0, 255, 0];

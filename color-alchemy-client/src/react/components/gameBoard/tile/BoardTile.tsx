@@ -2,6 +2,7 @@ import { useDraggable } from '@dnd-kit/react';
 import { useBoardTileColor } from '../../../hooks/gameHooks';
 import { Tile } from '../../tile/Tile';
 import { useGameContext } from '../../../context/gameContext';
+import { isBlack } from '../../../context/utils';
 
 type Props = {
   x: number;
@@ -20,10 +21,12 @@ export const BoardTile = ({ x, y }: Props) => {
   });
 
   const cursor = totalMovesLeft > 1 && initialMoves < 1 ? 'grab' : 'default';
-  const isSelected =
-    closestColor && x === closestColor.x && y === closestColor.y;
+  const isClosest =
+    !isBlack(closestColor.color) &&
+    x === closestColor.x &&
+    y === closestColor.y;
 
   return (
-    <Tile ref={ref} color={color} cursor={cursor} isSelected={isSelected} />
+    <Tile ref={ref} color={color} cursor={cursor} isSelected={isClosest} />
   );
 };

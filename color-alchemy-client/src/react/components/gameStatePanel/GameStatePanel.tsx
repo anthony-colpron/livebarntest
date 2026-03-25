@@ -1,4 +1,5 @@
 import { useGameContext } from '../../context/gameContext';
+import { isBlack } from '../../context/utils';
 import { Tile } from '../tile/Tile';
 import styles from './GameStatePanel.module.css';
 
@@ -14,8 +15,12 @@ export const GameStatePanel = () => {
         Target color: <Tile color={gameInfo.target} />
       </div>
       <div className={styles.row}>
-        Closest color: <Tile color={closestColor?.color || [0, 0, 0]} />
-        Δ={closestColorDifference && (closestColorDifference * 100).toFixed(2)}%
+        Closest color: <Tile color={closestColor.color || [0, 0, 0]} />
+        Δ=
+        {!isBlack(closestColor.color)
+          ? (closestColorDifference * 100).toFixed(2)
+          : '??.??'}
+        %
       </div>
     </div>
   );
