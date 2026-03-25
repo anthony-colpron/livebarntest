@@ -87,40 +87,48 @@ export const useColoredTiles = (
   const setTiles = () => {
     const coloredTiles = new Map<string, ColoredTile>();
 
+    const setTilesForHorizontalSources = (tileY: number) => {
+      Array.from({ length: boardWidth }).forEach((_, sourceX) => {
+        if (sourceX > 0 && sourceX < boardWidth - 1) {
+          coloredTiles.set(makeMapKey(sourceX, tileY), {
+            x: sourceX,
+            y: tileY,
+            color: getTileColor(
+              sourceX,
+              tileY,
+              boardWidth,
+              boardHeight,
+              coloredSources,
+            ),
+          });
+        }
+      });
+    };
+
+    const seTilesForVerticalSources = (tileX: number) => {
+      Array.from({ length: boardHeight }).forEach((_, sourceY) => {
+        if (sourceY > 0 && sourceY < boardHeight - 1) {
+          coloredTiles.set(makeMapKey(tileX, sourceY), {
+            x: tileX,
+            y: sourceY,
+            color: getTileColor(
+              tileX,
+              sourceY,
+              boardWidth,
+              boardHeight,
+              coloredSources,
+            ),
+          });
+        }
+      });
+    };
+
     coloredSources.forEach((source) => {
       const { x, y } = source;
       if (x === 0 || x === boardWidth - 1) {
-        Array.from({ length: boardWidth }).forEach((_, index) => {
-          if (index > 0 && index < boardWidth - 1) {
-            coloredTiles.set(makeMapKey(index, y), {
-              x: index,
-              y,
-              color: getTileColor(
-                index,
-                y,
-                boardWidth,
-                boardHeight,
-                coloredSources,
-              ),
-            });
-          }
-        });
+        setTilesForHorizontalSources(y);
       } else {
-        Array.from({ length: boardHeight }).forEach((_, index) => {
-          if (index > 0 && index < boardHeight - 1) {
-            coloredTiles.set(makeMapKey(x, index), {
-              x,
-              y: index,
-              color: getTileColor(
-                x,
-                index,
-                boardWidth,
-                boardHeight,
-                coloredSources,
-              ),
-            });
-          }
-        });
+        seTilesForVerticalSources(x);
       }
     });
 
