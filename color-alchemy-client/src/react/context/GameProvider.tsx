@@ -1,21 +1,13 @@
 import { useCallback, useMemo, useState, type PropsWithChildren } from 'react';
 import { type ColoredTile, DEFAULT_CLOSEST, GameContext } from './gameContext';
-import type { ShapeColor } from '../../data/types';
 import type { GameInfo } from '../../data/parser/parser';
 import { EffectsLayer } from './EffectsLayer';
-import { getDifferenceWithTargetColor } from './utils';
+import { getColorForInitialMove, getDifferenceWithTargetColor } from './utils';
 
 type Props = {
   gameInfo: GameInfo;
   restartGame: (userId: string) => void;
 } & PropsWithChildren;
-
-const getColorForInitialMove = (initialMoves: number): ShapeColor => {
-  if (initialMoves === 3) return [255, 0, 0];
-  if (initialMoves === 2) return [0, 255, 0];
-
-  return [0, 0, 255];
-};
 
 export const GameProvider = ({ gameInfo, children, restartGame }: Props) => {
   const [coloredSources, setColoredSources] = useState<ColoredTile[]>([]);

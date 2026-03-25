@@ -2,6 +2,13 @@ import type { ShapeColor } from '../../data/types';
 import { BLACK } from '../hooks/gameHooks';
 import type { ColoredTile } from './gameContext';
 
+export const getColorForInitialMove = (initialMoves: number): ShapeColor => {
+  if (initialMoves === 3) return [255, 0, 0];
+  if (initialMoves === 2) return [0, 255, 0];
+
+  return [0, 0, 255];
+};
+
 export const getDifferenceWithTargetColor = (
   tileColor: ShapeColor,
   targetColor: ShapeColor,
