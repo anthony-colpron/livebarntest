@@ -16,4 +16,4 @@ npm run dev
 
 ## Differences in my solution
 
-I found it was not a logical game design pattern to let the player with with a default (black) tile. In my solution, tiles not affected by a coloured source do not count in the closest color calculation nor do they allow the player to win.
+I found it was not a logical game design pattern to let the player win with a default (black) tile. In my solution, tiles not affected by a coloured source do not count in the closest color calculation nor do they allow the player to win.
