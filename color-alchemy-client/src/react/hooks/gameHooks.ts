@@ -46,15 +46,12 @@ export const useColoringMoves = (
   const [initialMoves, setInitialMoves] = useState(3);
 
   const setColoredSource = (sourceToSet: ColoredTile) => {
-    const { color: colorToSet } = sourceToSet;
-    const colorToSetIsBlack =
-      colorToSet[0] === 0 && colorToSet[1] === 0 && colorToSet[2] === 0;
     setColoredSources((prevColoredSources) => {
       const filteredColoredSources = prevColoredSources.filter(
         ({ x, y }) => sourceToSet.x !== x || sourceToSet.y !== y,
       );
 
-      if (colorToSetIsBlack) return filteredColoredSources;
+      if (isBlack(sourceToSet.color)) return filteredColoredSources;
 
       return [...filteredColoredSources, sourceToSet];
     });
