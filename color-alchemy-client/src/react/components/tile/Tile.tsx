@@ -15,8 +15,10 @@ export const Tile = forwardRef(
   ) => {
     const [r, g, b] = color;
 
+    const roundedColors = `${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}`;
+
     const style = {
-      backgroundColor: `rgb(${r}, ${g}, ${b})`,
+      backgroundColor: `rgb(${roundedColors})`,
       cursor,
       borderColor: isSelected ? 'red' : undefined,
     };
@@ -28,7 +30,7 @@ export const Tile = forwardRef(
           className={styles.container}
           style={style}
           data-tooltip-id="color-tooltip"
-          data-tooltip-content={`${r}, ${g}, ${b}`}
+          data-tooltip-content={`${roundedColors}`}
           data-tooltip-variant="info"
           data-tooltip-offset={5}
         />

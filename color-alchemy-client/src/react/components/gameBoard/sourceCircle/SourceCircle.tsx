@@ -18,9 +18,11 @@ export const SourceCircle = ({ x, y }: Props) => {
     id: `${x},${y}`,
     data: { x, y },
   });
+  const roundedColors = `${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}`;
 
   const style = {
-    backgroundColor: `rgb(${r}, ${g}, ${b})`,
+    backgroundColor: `rgb(${roundedColors})`,
+
     cursor: hasInitialMoves ? 'pointer' : 'default',
   };
 
@@ -35,7 +37,7 @@ export const SourceCircle = ({ x, y }: Props) => {
           hasInitialMoves ? () => setInitialSourceColor(x, y) : undefined
         }
         data-tooltip-id="color-tooltip"
-        data-tooltip-content={`${r}, ${g}, ${b}`}
+        data-tooltip-content={`${roundedColors}`}
         data-tooltip-variant="info"
         data-tooltip-offset={5}
       />
