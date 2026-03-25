@@ -11,9 +11,6 @@ export const App = () => {
   return (
     <GameProvider gameInfo={gameInfo}>
       <div>
-        {Object.entries(gameInfo).map(([key, value]) => {
-          return <div key={key}>{`${key}: ${value}`}</div>;
-        })}
         <GameStatePanel />
         <GameBoard />
       </div>

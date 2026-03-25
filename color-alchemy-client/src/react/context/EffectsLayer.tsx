@@ -4,8 +4,8 @@ import { useGameContext, type ColoredTile } from './gameContext';
 
 type Props = {
   setColoredBoardTiles: React.Dispatch<SetStateAction<ColoredTile[]>>;
-  setClosestColor: React.Dispatch<SetStateAction<ColoredTile | undefined>>;
-  setClosestColorDifference: React.Dispatch<SetStateAction<number | undefined>>;
+  setClosestColor: React.Dispatch<SetStateAction<ColoredTile>>;
+  setClosestColorDifference: React.Dispatch<SetStateAction<number>>;
 } & PropsWithChildren;
 
 export const EffectsLayer = ({

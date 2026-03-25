@@ -8,6 +8,8 @@ export type ColoredTile = {
   color: ShapeColor;
 };
 
+export const DEFAULT_CLOSEST: ColoredTile = { x: 1, y: 1, color: [0, 0, 0] };
+
 const stubGameInfo: GameInfo = {
   userId: '',
   height: 0,
@@ -25,7 +27,7 @@ type ContextType = {
   totalMovesLeft: number;
   boardHeight: number;
   boardWidth: number;
-  closestColor?: ColoredTile;
+  closestColor: ColoredTile;
   closestColorDifference?: number;
   setColoredSource: (coloredTile: ColoredTile) => void;
 };
@@ -39,6 +41,7 @@ export const GameContext = createContext<ContextType>({
   totalMovesLeft: 0,
   boardHeight: 0,
   boardWidth: 0,
+  closestColor: DEFAULT_CLOSEST,
   setColoredSource: () => {},
 });
 

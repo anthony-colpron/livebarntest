@@ -1,8 +1,9 @@
 import { useCallback, useMemo, useState, type PropsWithChildren } from 'react';
-import { type ColoredTile, GameContext } from './gameContext';
+import { type ColoredTile, DEFAULT_CLOSEST, GameContext } from './gameContext';
 import type { ShapeColor } from '../../data/types';
 import type { GameInfo } from '../../data/parser/parser';
 import { EffectsLayer } from './EffectsLayer';
+import { getDifferenceWithTargetColor } from './utils';
 
 type Props = { gameInfo: GameInfo } & PropsWithChildren;
 
@@ -17,9 +18,11 @@ export const GameProvider = ({ gameInfo, children }: Props) => {
   const [coloredSources, setColoredSources] = useState<ColoredTile[]>([]);
   const [initialMoves, setInitialMoves] = useState(3);
   const [totalMovesLeft, setTotalMovesLeft] = useState(gameInfo.maxMoves);
-  const [closestColor, setClosestColor] = useState<ColoredTile>();
-  const [closestColorDifference, setClosestColorDifference] =
-    useState<number>();
+  const [closestColor, setClosestColor] =
+    useState<ColoredTile>(DEFAULT_CLOSEST);
+  const [closestColorDifference, setClosestColorDifference] = useState<number>(
+    getDifferenceWithTargetColor(DEFAULT_CLOSEST.color, gameInfo.target),
+  );
 
   const boardWidth = gameInfo.width + 2;
   const boardHeight = gameInfo.height + 2;

@@ -6,16 +6,16 @@ export const GameStatePanel = () => {
   const { gameInfo, closestColor, closestColorDifference, totalMovesLeft } =
     useGameContext();
   return (
-    <div>
+    <div className={styles.container}>
       <h2>RGB Alchemy</h2>
       <div>User ID: {gameInfo.userId}</div>
       <div>Moves left: {totalMovesLeft}</div>
       <div className={styles.row}>
-        TargetColor: <Tile color={gameInfo.target} />
+        Target color: <Tile color={gameInfo.target} />
       </div>
       <div className={styles.row}>
-        Closest color: <Tile color={closestColor?.color || [0, 0, 0]} /> Δ={' '}
-        {closestColorDifference}
+        Closest color: <Tile color={closestColor?.color || [0, 0, 0]} />
+        Δ={closestColorDifference && (closestColorDifference * 100).toFixed(2)}%
       </div>
     </div>
   );
