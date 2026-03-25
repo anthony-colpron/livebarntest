@@ -6,7 +6,7 @@ import { useGameContext } from '../../context/gameContext';
 import { DragDropProvider } from '../../context/dragDropProvider/DragDropProvider';
 
 export const GameBoard = () => {
-  const { boardHeight, boardWidth, coloredSources } = useGameContext();
+  const { boardHeight, boardWidth } = useGameContext();
   const renderShape = (x: number, y: number) => {
     if (isCorner(x, y, boardWidth, boardHeight)) return null;
 
@@ -18,27 +18,20 @@ export const GameBoard = () => {
   };
 
   return (
-    <>
-      {coloredSources.map(({ x, y, color }) => (
-        <div key={`${x}${y}`}>
-          x: {x} y: {y}, color: {color}
-        </div>
-      ))}
-      <DragDropProvider>
-        <div className={styles.container}>
-          {Array.from({ length: boardHeight }).map((_, y) => (
-            <div key={y} className={styles.row}>
-              {Array.from({ length: boardWidth }).map((__, x) => {
-                return (
-                  <div key={`${x}${y}`} className={styles.shapeContainer}>
-                    {renderShape(x, y)}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      </DragDropProvider>
-    </>
+    <DragDropProvider>
+      <div className={styles.container}>
+        {Array.from({ length: boardHeight }).map((_, y) => (
+          <div key={y} className={styles.row}>
+            {Array.from({ length: boardWidth }).map((__, x) => {
+              return (
+                <div key={`${x}${y}`} className={styles.shapeContainer}>
+                  {renderShape(x, y)}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </DragDropProvider>
   );
 };

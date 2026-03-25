@@ -5,7 +5,10 @@ import type { GameInfo } from '../../data/parser/parser';
 import { EffectsLayer } from './EffectsLayer';
 import { getDifferenceWithTargetColor } from './utils';
 
-type Props = { gameInfo: GameInfo } & PropsWithChildren;
+type Props = {
+  gameInfo: GameInfo;
+  restartGame: (userId: string) => void;
+} & PropsWithChildren;
 
 const getColorForInitialMove = (initialMoves: number): ShapeColor => {
   if (initialMoves === 3) return [255, 0, 0];
@@ -14,7 +17,7 @@ const getColorForInitialMove = (initialMoves: number): ShapeColor => {
   return [0, 0, 255];
 };
 
-export const GameProvider = ({ gameInfo, children }: Props) => {
+export const GameProvider = ({ gameInfo, children, restartGame }: Props) => {
   const [coloredSources, setColoredSources] = useState<ColoredTile[]>([]);
   const [initialMoves, setInitialMoves] = useState(3);
   const [totalMovesLeft, setTotalMovesLeft] = useState(gameInfo.maxMoves);
@@ -92,6 +95,7 @@ export const GameProvider = ({ gameInfo, children }: Props) => {
         setClosestColor={setClosestColor}
         setClosestColorDifference={setClosestColorDifference}
         setColoredBoardTiles={setColoredBoardTiles}
+        restartGame={restartGame}
       >
         {children}
       </EffectsLayer>

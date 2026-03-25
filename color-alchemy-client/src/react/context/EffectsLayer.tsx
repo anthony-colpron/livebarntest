@@ -6,12 +6,14 @@ type Props = {
   setColoredBoardTiles: React.Dispatch<SetStateAction<ColoredTile[]>>;
   setClosestColor: React.Dispatch<SetStateAction<ColoredTile>>;
   setClosestColorDifference: React.Dispatch<SetStateAction<number>>;
+  restartGame: (userId: string) => void;
 } & PropsWithChildren;
 
 export const EffectsLayer = ({
   setColoredBoardTiles,
   setClosestColor,
   setClosestColorDifference,
+  restartGame,
   children,
 }: Props) => {
   const {
@@ -20,6 +22,8 @@ export const EffectsLayer = ({
     boardHeight,
     coloredBoardTiles,
     gameInfo,
+    closestColorDifference,
+    totalMovesLeft,
   } = useGameContext();
   const setTiles = () => {
     const tilesToColor: { x: number; y: number }[] = [];
@@ -80,6 +84,17 @@ export const EffectsLayer = ({
       getDifferenceWithTargetColor(closestTile.color, gameInfo.target),
     );
   }, [coloredBoardTiles]);
+
+  useEffect(() => {
+    const hasLost = totalMovesLeft < 1;
+    const hasWon = closestColorDifference && closestColorDifference <= 0.1;
+    if (hasWon || hasLost) {
+      const message = `${hasWon ? 'Success' : 'Failure'}! Do you want to play again?`;
+      if (window.confirm(message)) {
+        restartGame(gameInfo.userId);
+      }
+    }
+  }, [closestColorDifference, totalMovesLeft, restartGame]);
 
   return <>{children}</>;
 };
