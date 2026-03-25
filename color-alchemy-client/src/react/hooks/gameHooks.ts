@@ -7,9 +7,9 @@ import {
   getTileColor,
   isBlack,
   makeMapKey,
-} from '../context/utils';
+} from '../context/colorTilesUtils';
 import type { GameInfo } from '../../data/parser/parser';
-import { BLACK } from '../../constants';
+import { BLACK } from '../../data/constants';
 
 type UseColoringMovesReturnType = {
   coloredSources: ColoredTile[];

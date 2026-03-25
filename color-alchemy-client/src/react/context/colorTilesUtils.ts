@@ -1,4 +1,4 @@
-import { BLACK } from '../../constants';
+import { BLACK } from '../../data/constants';
 import type { ColoredTile, ShapeColor } from '../../data/types';
 
 export const makeMapKey = (x: number, y: number) => `${x},${y}`;

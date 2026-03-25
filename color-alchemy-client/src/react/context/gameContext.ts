@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 import type { GameInfo } from '../../data/parser/parser';
 import { type ColoredTile } from '../../data/types';
-import { DEFAULT_CLOSEST } from '../../constants';
+import { DEFAULT_CLOSEST } from '../../data/constants';
 
 const stubGameInfo: GameInfo = {
   userId: '',

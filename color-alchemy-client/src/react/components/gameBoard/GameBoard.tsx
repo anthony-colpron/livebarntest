@@ -1,7 +1,7 @@
 import styles from './GameBoard.module.css';
 import { SourceCircle } from './sourceCircle/SourceCircle';
 import { BoardTile } from './tile/BoardTile';
-import { isCorner, isSide } from './utils';
+import { isCorner, isSide } from './gameBoardUtils';
 import { useGameContext } from '../../context/gameContext';
 import { DragDropProvider } from '../../context/dragDropProvider/DragDropProvider';
 

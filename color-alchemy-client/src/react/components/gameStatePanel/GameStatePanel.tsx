@@ -1,5 +1,5 @@
 import { useGameContext } from '../../context/gameContext';
-import { isBlack } from '../../context/utils';
+import { isBlack } from '../../context/colorTilesUtils';
 import { Tile } from '../tile/Tile';
 import styles from './GameStatePanel.module.css';
 

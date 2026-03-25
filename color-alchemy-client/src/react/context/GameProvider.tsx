@@ -2,9 +2,9 @@ import { useMemo, useState, type PropsWithChildren } from 'react';
 import { GameContext } from './gameContext';
 import type { GameInfo } from '../../data/parser/parser';
 import { EffectsLayer } from './EffectsLayer';
-import { getDifferenceWithTargetColor } from './utils';
+import { getDifferenceWithTargetColor } from './colorTilesUtils';
 import { type ColoredTile } from '../../data/types';
-import { DEFAULT_CLOSEST } from '../../constants';
+import { DEFAULT_CLOSEST } from '../../data/constants';
 import { useColoringMoves } from '../hooks/gameHooks';
 
 type Props = {

@@ -1,12 +1,19 @@
-# LiveBarn Front-end Software Engineer Interview Code Challenge #
+# Code alchemy solution by Anthony Colpron
 
-Welcome to LiveBarn Front-end Software Engineer Interview Code Challenge. 
+## Running the server
 
-Please clone this repository and read the instructions [here](https://hackmd.io/@gd_dVYF0STqPqMLWkxnd6A/Byrxur5At).
+```
+cd ./code-alchemy-server
+npm run start
+```
 
-Please upload your code to your online repository and provide us with the link.
+## Running the client
 
-## Evaluation ##
-1. Code completion and correctness
-2. Code brevity and clarity
-3. Code efficiency and readability
+```
+cd ./code-alchemy-client
+npm run dev
+```
+
+## Differences in my solution
+
+I found it was not a logical game design pattern to let the player with with a default (black) tile. In my solution, tiles not affected by a coloured source do not count in the closest color calculation nor do they allow the player to win.

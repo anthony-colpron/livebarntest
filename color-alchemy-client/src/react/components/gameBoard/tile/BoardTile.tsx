@@ -2,7 +2,7 @@ import { useDraggable } from '@dnd-kit/react';
 import { useBoardTileColor } from '../../../hooks/gameHooks';
 import { Tile } from '../../tile/Tile';
 import { useGameContext } from '../../../context/gameContext';
-import { isBlack } from '../../../context/utils';
+import { isBlack } from '../../../context/colorTilesUtils';
 
 type Props = {
   x: number;
