@@ -1,7 +1,21 @@
-import type { ShapeColor } from '../../data/types';
+import { useEffect, useState, type SetStateAction } from 'react';
+import { BLACK } from '../../constants';
+import type { ColoredTile, ShapeColor } from '../../data/types';
 import { useGameContext } from '../context/gameContext';
+import {
+  getColorForInitialMove,
+  getTileColor,
+  makeMapKey,
+} from '../context/utils';
+import type { GameInfo } from '../../data/parser/parser';
 
-export const BLACK: ShapeColor = [0, 0, 0];
+type UseColoringMovesReturnType = {
+  coloredSources: ColoredTile[];
+  setColoredSource: (source: ColoredTile) => void;
+  totalMovesLeft: number;
+  initialMoves: number;
+  setInitialSourceColor: (x: number, y: number) => void;
+};
 
 export const useSourceColor = (x: number, y: number): ShapeColor => {
   const { coloredSources } = useGameContext();
@@ -17,9 +31,117 @@ export const useSourceColor = (x: number, y: number): ShapeColor => {
 
 export const useBoardTileColor = (x: number, y: number): ShapeColor => {
   const { coloredBoardTiles } = useGameContext();
-  const coloredTile = coloredBoardTiles.find(
-    ({ x: tileX, y: tileY }) => x === tileX && y === tileY,
-  );
+  const coloredTile = coloredBoardTiles.get(makeMapKey(x, y));
 
   return coloredTile?.color ?? BLACK;
+};
+
+export const useColoringMoves = (
+  gameInfo: GameInfo,
+): UseColoringMovesReturnType => {
+  const [coloredSources, setColoredSources] = useState<ColoredTile[]>([]);
+  const [totalMovesLeft, setTotalMovesLeft] = useState(gameInfo.maxMoves);
+  const [initialMoves, setInitialMoves] = useState(3);
+
+  const setColoredSource = (sourceToSet: ColoredTile) => {
+    const { color: colorToSet } = sourceToSet;
+    const colorToSetIsBlack =
+      colorToSet[0] === 0 && colorToSet[1] === 0 && colorToSet[2] === 0;
+    setColoredSources((prevColoredSources) => {
+      const filteredColoredSources = prevColoredSources.filter(
+        ({ x, y }) => sourceToSet.x !== x || sourceToSet.y !== y,
+      );
+
+      if (colorToSetIsBlack) return filteredColoredSources;
+
+      return [...filteredColoredSources, sourceToSet];
+    });
+
+    setTotalMovesLeft((prevDragMoves) => prevDragMoves - 1);
+  };
+
+  const setInitialSourceColor = (x: number, y: number) => {
+    if (initialMoves < 1) return;
+    const color = getColorForInitialMove(initialMoves);
+
+    setColoredSource({ x, y, color });
+    setInitialMoves((prevMoves) => prevMoves - 1);
+  };
+
+  return {
+    coloredSources,
+    setColoredSource,
+    totalMovesLeft,
+    initialMoves,
+    setInitialSourceColor,
+  };
+};
+
+export const useColoredTiles = (
+  setColoredBoardTiles: React.Dispatch<
+    SetStateAction<Map<string, ColoredTile>>
+  >,
+) => {
+  const { coloredSources, boardWidth, boardHeight } = useGameContext();
+  const setTiles = () => {
+    const coloredTiles = new Map<string, ColoredTile>();
+
+    coloredSources.forEach((source) => {
+      const { x, y } = source;
+      if (x === 0 || x === boardWidth - 1) {
+        Array.from({ length: boardWidth }).forEach((_, index) => {
+          if (index > 0 && index < boardWidth - 1) {
+            coloredTiles.set(makeMapKey(index, y), {
+              x: index,
+              y,
+              color: getTileColor(
+                index,
+                y,
+                boardWidth,
+                boardHeight,
+                coloredSources,
+              ),
+            });
+          }
+        });
+      } else {
+        Array.from({ length: boardHeight }).forEach((_, index) => {
+          if (index > 0 && index < boardHeight - 1) {
+            coloredTiles.set(makeMapKey(x, index), {
+              x,
+              y: index,
+              color: getTileColor(
+                x,
+                index,
+                boardWidth,
+                boardHeight,
+                coloredSources,
+              ),
+            });
+          }
+        });
+      }
+    });
+
+    setColoredBoardTiles(coloredTiles);
+  };
+
+  useEffect(() => {
+    setTiles();
+  }, [coloredSources]);
+};
+
+export const useGameEnd = (restartGame: (userId: string) => void) => {
+  const { gameInfo, closestColorDifference, totalMovesLeft } = useGameContext();
+
+  useEffect(() => {
+    const hasLost = totalMovesLeft < 1;
+    const hasWon = closestColorDifference && closestColorDifference <= 0.1;
+    if (hasWon || hasLost) {
+      const message = `${hasWon ? 'Success' : 'Failure'}! Do you want to play again?`;
+      if (window.confirm(message)) {
+        restartGame(gameInfo.userId);
+      }
+    }
+  }, [closestColorDifference, totalMovesLeft, restartGame]);
 };

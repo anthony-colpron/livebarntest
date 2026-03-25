@@ -1,14 +1,7 @@
 import { createContext, useContext } from 'react';
-import type { ShapeColor } from '../../data/types';
 import type { GameInfo } from '../../data/parser/parser';
-
-export type ColoredTile = {
-  x: number;
-  y: number;
-  color: ShapeColor;
-};
-
-export const DEFAULT_CLOSEST: ColoredTile = { x: 1, y: 1, color: [0, 0, 0] };
+import { type ColoredTile } from '../../data/types';
+import { DEFAULT_CLOSEST } from '../../constants';
 
 const stubGameInfo: GameInfo = {
   userId: '',
@@ -20,7 +13,7 @@ const stubGameInfo: GameInfo = {
 
 type ContextType = {
   coloredSources: ColoredTile[];
-  coloredBoardTiles: ColoredTile[];
+  coloredBoardTiles: Map<string, ColoredTile>;
   gameInfo: GameInfo;
   setInitialSourceColor: (x: number, y: number) => void;
   initialMoves: number;
@@ -34,7 +27,7 @@ type ContextType = {
 
 export const GameContext = createContext<ContextType>({
   coloredSources: [],
-  coloredBoardTiles: [],
+  coloredBoardTiles: new Map(),
   gameInfo: stubGameInfo,
   setInitialSourceColor: () => {},
   initialMoves: 3,

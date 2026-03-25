@@ -1,6 +1,7 @@
-import type { ShapeColor } from '../../data/types';
-import { BLACK } from '../hooks/gameHooks';
-import type { ColoredTile } from './gameContext';
+import { BLACK } from '../../constants';
+import type { ColoredTile, ShapeColor } from '../../data/types';
+
+export const makeMapKey = (x: number, y: number) => `${x},${y}`;
 
 export const getColorForInitialMove = (initialMoves: number): ShapeColor => {
   if (initialMoves === 3) return [255, 0, 0];

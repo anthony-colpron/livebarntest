@@ -1,8 +1,11 @@
-import { useCallback, useMemo, useState, type PropsWithChildren } from 'react';
-import { type ColoredTile, DEFAULT_CLOSEST, GameContext } from './gameContext';
+import { useMemo, useState, type PropsWithChildren } from 'react';
+import { GameContext } from './gameContext';
 import type { GameInfo } from '../../data/parser/parser';
 import { EffectsLayer } from './EffectsLayer';
-import { getColorForInitialMove, getDifferenceWithTargetColor } from './utils';
+import { getDifferenceWithTargetColor } from './utils';
+import { type ColoredTile } from '../../data/types';
+import { DEFAULT_CLOSEST } from '../../constants';
+import { useColoringMoves } from '../hooks/gameHooks';
 
 type Props = {
   gameInfo: GameInfo;
@@ -10,47 +13,26 @@ type Props = {
 } & PropsWithChildren;
 
 export const GameProvider = ({ gameInfo, children, restartGame }: Props) => {
-  const [coloredSources, setColoredSources] = useState<ColoredTile[]>([]);
-  const [initialMoves, setInitialMoves] = useState(3);
-  const [totalMovesLeft, setTotalMovesLeft] = useState(gameInfo.maxMoves);
   const [closestColor, setClosestColor] =
     useState<ColoredTile>(DEFAULT_CLOSEST);
   const [closestColorDifference, setClosestColorDifference] = useState<number>(
     getDifferenceWithTargetColor(DEFAULT_CLOSEST.color, gameInfo.target),
   );
 
+  const [coloredBoardTiles, setColoredBoardTiles] = useState<
+    Map<string, ColoredTile>
+  >(new Map());
+
+  const {
+    coloredSources,
+    setColoredSource,
+    totalMovesLeft,
+    initialMoves,
+    setInitialSourceColor,
+  } = useColoringMoves(gameInfo);
+
   const boardWidth = gameInfo.width + 2;
   const boardHeight = gameInfo.height + 2;
-
-  const [coloredBoardTiles, setColoredBoardTiles] = useState<ColoredTile[]>([]);
-
-  const setColoredSource = useCallback((sourceToSet: ColoredTile) => {
-    const { color: colorToSet } = sourceToSet;
-    const colorToSetIsBlack =
-      colorToSet[0] === 0 && colorToSet[1] === 0 && colorToSet[2] === 0;
-    setColoredSources((prevColoredSources) => {
-      const filteredColoredSources = prevColoredSources.filter(
-        ({ x, y }) => sourceToSet.x !== x || sourceToSet.y !== y,
-      );
-
-      if (colorToSetIsBlack) return filteredColoredSources;
-
-      return [...filteredColoredSources, sourceToSet];
-    });
-
-    setTotalMovesLeft((prevDragMoves) => prevDragMoves - 1);
-  }, []);
-
-  const setInitialSourceColor = useCallback(
-    (x: number, y: number) => {
-      if (initialMoves < 1) return;
-      const color = getColorForInitialMove(initialMoves);
-
-      setColoredSource({ x, y, color });
-      setInitialMoves((prevMoves) => prevMoves - 1);
-    },
-    [initialMoves],
-  );
 
   const value = useMemo(
     () => ({
