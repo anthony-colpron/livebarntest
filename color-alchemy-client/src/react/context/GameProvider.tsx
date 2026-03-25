@@ -13,11 +13,16 @@ type Props = {
 } & PropsWithChildren;
 
 export const GameProvider = ({ gameInfo, children, restartGame }: Props) => {
-  const [closestColor, setClosestColor] =
-    useState<ColoredTile>(DEFAULT_CLOSEST);
-  const [closestColorDifference, setClosestColorDifference] = useState<number>(
-    getDifferenceWithTargetColor(DEFAULT_CLOSEST.color, gameInfo.target),
+  const defaultDifference = getDifferenceWithTargetColor(
+    DEFAULT_CLOSEST.color,
+    gameInfo.target,
   );
+  const [closestColor, setClosestColor] = useState(DEFAULT_CLOSEST);
+  const [closestColorDifference, setClosestColorDifference] =
+    useState(defaultDifference);
+
+  const boardWidth = gameInfo.width + 2;
+  const boardHeight = gameInfo.height + 2;
 
   const [coloredBoardTiles, setColoredBoardTiles] = useState<
     Map<string, ColoredTile>
@@ -30,9 +35,6 @@ export const GameProvider = ({ gameInfo, children, restartGame }: Props) => {
     initialMoves,
     setInitialSourceColor,
   } = useColoringMoves(gameInfo);
-
-  const boardWidth = gameInfo.width + 2;
-  const boardHeight = gameInfo.height + 2;
 
   const value = useMemo(
     () => ({

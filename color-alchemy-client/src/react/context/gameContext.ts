@@ -21,7 +21,7 @@ type ContextType = {
   boardHeight: number;
   boardWidth: number;
   closestColor: ColoredTile;
-  closestColorDifference?: number;
+  closestColorDifference: number;
   setColoredSource: (coloredTile: ColoredTile) => void;
 };
 
@@ -35,6 +35,7 @@ export const GameContext = createContext<ContextType>({
   boardHeight: 0,
   boardWidth: 0,
   closestColor: DEFAULT_CLOSEST,
+  closestColorDifference: 1,
   setColoredSource: () => {},
 });
 

@@ -4,6 +4,7 @@ import type { ColoredTile, ShapeColor } from '../../data/types';
 import { useGameContext } from '../context/gameContext';
 import {
   getColorForInitialMove,
+  getDifferenceWithTargetColor,
   getTileColor,
   makeMapKey,
 } from '../context/utils';
@@ -131,14 +132,48 @@ export const useColoredTiles = (
   }, [coloredSources]);
 };
 
+export const useClosestColor = (
+  setClosestColor: React.Dispatch<SetStateAction<ColoredTile>>,
+  setClosestColorDifference: React.Dispatch<SetStateAction<number>>,
+) => {
+  const { coloredBoardTiles, gameInfo } = useGameContext();
+
+  const getClosestColor = (): ColoredTile | null => {
+    return Array.from(coloredBoardTiles.values()).reduce<ColoredTile | null>(
+      (acc, boardTile): ColoredTile | null => {
+        if (!acc) return boardTile;
+
+        if (
+          getDifferenceWithTargetColor(boardTile.color, gameInfo.target) <
+          getDifferenceWithTargetColor(acc.color, gameInfo.target)
+        ) {
+          return boardTile;
+        }
+
+        return acc;
+      },
+      null,
+    );
+  };
+
+  useEffect(() => {
+    const closestTile = getClosestColor();
+    if (!closestTile) return;
+    setClosestColor(closestTile);
+    setClosestColorDifference(
+      getDifferenceWithTargetColor(closestTile.color, gameInfo.target),
+    );
+  }, [coloredBoardTiles]);
+};
+
 export const useGameEnd = (restartGame: (userId: string) => void) => {
   const { gameInfo, closestColorDifference, totalMovesLeft } = useGameContext();
 
   useEffect(() => {
     const hasLost = totalMovesLeft < 1;
-    const hasWon = closestColorDifference && closestColorDifference <= 0.1;
+    const hasWon = closestColorDifference <= 0.1;
     if (hasWon || hasLost) {
-      const message = `${hasWon ? 'Success' : 'Failure'}! Do you want to play again?`;
+      const message = `${hasWon ? 'Success' : 'Failure'}! Closest match is ${(closestColorDifference * 100).toFixed(2)}%! Do you want to play again?`;
       if (window.confirm(message)) {
         restartGame(gameInfo.userId);
       }
